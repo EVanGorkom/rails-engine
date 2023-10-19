@@ -8,4 +8,12 @@ describe "Merchants API" do
 
     expect(response).to be_successful
   end
+
+  it "finds a single Merchant" do
+    merchant = Merchant.create(name: "Bob's Burgers")
+
+    get "/api/v1/merchants/#{merchant.id}"
+
+    expect(response).to be_successful
+  end
 end
