@@ -64,4 +64,14 @@ describe "Items API endpoint" do
     expect(response).to be_successful
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  it "can fetch the data of the merchant associated to the item" do
+    merchant = Merchant.create(name: "Bob's Burgers")
+    create_list(:item, 6)
+    item = Item.create(name: "Burger", description: "Yummy", unit_price: 10.0, merchant_id: merchant.id)
+
+    get "/api/v1/items/#{item.id}/merchant"
+
+    expect(response).to be_successful
+  end
 end

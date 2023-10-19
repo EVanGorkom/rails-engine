@@ -4,7 +4,11 @@ Rails.application.routes.draw do
       resources :merchants, only: [:index, :show] do
         resources :items, only: [:index]
       end
-      resources :items, except: [:new]
+      resources :items, except: [:new] do
+        member do
+          get 'merchant', to: 'items#show_merchant'
+        end
+      end
       # resources :transactions
       # resources :invoices
       # resources :invoice_items
