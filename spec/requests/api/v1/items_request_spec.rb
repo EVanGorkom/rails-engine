@@ -35,4 +35,22 @@ describe "Items API endpoint" do
 
     expect(response).to be_successful
   end
+
+  it "This endpoint, can update an existing item" do
+    merchant = Merchant.create(name: "Bob's Burgers")
+    create_list(:item, 6)
+
+    item = Item.create(name: "Burg", description: "Yummy", unit_price: 10.0, merchant_id: merchant.id)
+
+    previous_name = Item.last.name
+    item_params = { name: "Big Burg" }
+    headers = {"CONTENT_TYPE" => "application/json"}
+  
+    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
+    item = Item.find_by(id: item.id)
+  
+    expect(response).to be_successful
+    expect(item.name).to_not eq(previous_name)
+    expect(item.name).to eq("Big Burg")
+  end
 end
