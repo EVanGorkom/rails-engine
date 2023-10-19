@@ -8,7 +8,6 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    # require 'pry';binding.pry
     render json: ItemSerializer.new(Item.create(item_params))
   end
 
@@ -23,6 +22,14 @@ class Api::V1::ItemsController < ApplicationController
   def show_merchant
     item = Item.find(params[:id])
     render json: item.merchant
+  end
+
+  def find
+    render json: ItemSerializer.new(Item.find_by(name: params[:name]))
+  end
+
+  def find_all
+    render json: ItemSerializer.new(Item.find_by(name: params[:name]))
   end
 
   private

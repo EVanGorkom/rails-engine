@@ -85,4 +85,50 @@ describe "Items API endpoint" do
 
     expect(response).to be_successful
   end
+
+  describe "search functions" do
+    it "#find" do
+      merchant = create(:merchant)
+      create_list(:item, 6)
+      item = Item.create(name: "Burger", description: "Yummy", unit_price: 10.0, merchant_id: merchant.id)
+
+      get "/api/v1/items/find?name=#{item.name}"
+
+      expect(response).to be_successful
+
+      item_data = JSON.parse(response.body, symbolize_names: true)
+
+      expect(item_data).to have_key(:data)
+      expect(item_data[:data]).to be_a(Hash)
+
+      item_attributes = item_data[:data][:attributes]
+
+      expect(item_attributes[:name]).to eq(item.name)
+      expect(item_attributes[:description]).to eq(item.description)
+      expect(item_attributes[:unit_price]).to eq(item.unit_price)
+    end
+
+    it "#find_all" do
+      merchant = create(:merchant)
+      create_list(:item, 6)
+      item1 = Item.create(name: "Burger", description: "Yummy", unit_price: 10.0, merchant_id: merchant.id)
+      item2 = Item.create(name: "CheeseBurger", description: "Yummy", unit_price: 10.0, merchant_id: merchant.id)
+      item3 = Item.create(name: "Mushroom Burger", description: "Yummy", unit_price: 10.0, merchant_id: merchant.id)
+
+      get "/api/v1/items/find_all?name=burger"
+
+      expect(response).to be_successful
+
+      item_data = JSON.parse(response.body, symbolize_names: true)
+
+      expect(item_data).to have_key(:data)
+      expect(item_data[:data]).to be_a(Hash)
+
+      item_attributes = item_data[:data][:attributes]
+
+      expect(item_attributes[:name]).to eq(item.name)
+      expect(item_attributes[:description]).to eq(item.description)
+      expect(item_attributes[:unit_price]).to eq(item.unit_price)
+    end
+  end
 end
